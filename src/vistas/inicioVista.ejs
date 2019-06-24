@@ -1,0 +1,336 @@
+<% var pro = 0 %>
+<% include particiones/_header %>
+    <div class="container">
+        <div class="row mt-3">
+            <% include particiones/_menu_lateral %>
+            <div class="col-lg-8">
+                <h4 id="tituloPromociones" style="border-bottom: 1px solid #ccc; padding-top:20px; display:none"><i class="fas fa-certificate"></i> Promociones</h4>
+                <div id="contenidoPromociones" style="display:flex;flex-wrap: wrap; display:none">
+                    <% for (var i=0; i<promociones.length; i++) { %>
+                    <div class="card" style="width: 200px; margin:20px;">
+                        <% for (var j=0; j<productos.length; j++){%>
+                            <% if(productos[j].codigopro==promociones[i].codigo){%>
+                                <img class="card-img-top" src="<%=productos[j].imagen%>">
+                            <% }%>
+                        <% }%>
+                        <% for (var j=0; j<servicios.length; j++){%>
+                            <% if(servicios[j].codigopro==promociones[i].codigo){%>
+                                <img class="card-img-top" src="<%=servicios[j].imagen%>">
+                            <% }%>
+                        <% }%>
+                        <div class="card-body">
+                            <p class="card-title">
+                                <%= promociones[i].nombre %>
+                            </p>
+                            <hr>
+                            <p class="card-text">S/.
+                                <%= promociones[i].descuento %> de descuento</p>
+                            <!--p class="card-text"><%= promociones[i].detalle %></p>
+                            <p class="card-text"><%= promociones[i].date_ini %></p>
+                            <p class="card-text"><%= promociones[i].date_fin %></p>
+                            <a href="#" class="btn btn-primary">Detalles</a-->
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+
+                <h4 id="tituloProductos" style="border-bottom: 1px solid #ccc; padding-top:20px;"> <i class="fas fa-box"></i> Productos</h4>
+                <div id="contenidoProductos" style="display:flex;flex-wrap: wrap;">
+                    <% for (var i=0; i<productos.length; i++) { %>
+                        <div class="card" style="width: 200px; margin:20px; border: 1px solid #CBCBCB">
+                            <img class="card-img-top" src="<%= productos[i].imagen %>" onerror="this.src='no-image.jpg';">
+                            <div class="card-body">
+                                <p class="card-title">
+                                    <%= productos[i].nombre %>
+                                </p>
+                                <p class="card-text mb-5">S/.
+                                    <%= productos[i].precio %>
+                                </p>
+                                <div style="position: absolute; bottom: 0;left:0" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <input type="checkbox"  id="<%=productos[i].codigo %>">
+                                        </div>
+                                    </div>
+                                    <label class="form-control" for="<%=productos[i].codigo %>">Seleccionar</label>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+
+                <h4 id="tituloServicios" style="border-bottom: 1px solid #ccc; padding-top:20px; display:none"><i class="fas fa-dolly"></i>  Servicios</h4>
+                <div id="contenidoServicios" style="display:flex;flex-wrap: wrap; display:none">
+                    <% for (var i=0; i<servicios.length; i++) { %>
+                        <div class="card" style="width: 200px; margin:20px; border: 1px solid #CBCBCB">
+                            <img class="card-img-top" src="<%= servicios[i].imagen %>" onerror="this.src='no-image.jpg';">
+                            <div class="card-body">
+                                <p class="card-title">
+                                    <%= servicios[i].nombre %>
+                                </p>
+                                <p class="card-text mb-5">S/.
+                                    <%= servicios[i].precio %>
+                                </p>
+                                <div style="position: absolute; bottom: 0;left:0" class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <input type="checkbox"  id="<%=servicios[i].codigo %>">
+                                        </div>
+                                    </div>
+                                    <label class="form-control" for="<%=servicios[i].codigo %>">Seleccionar</label>
+                                </div>
+                            </div>                            
+                        </div>
+                        <div class="modal-footer">
+                                                       
+                            <button id="btnConsultar" class="btn btn-primary" onclick="enviarConsulta('+3+')" type="submit">Aceptar</button>
+                            <button id="btnCancelar" class="btn btn-danger"   data-dismiss="modal" type="submit">Cancelar</button>
+                        </div>
+                        <% } %>
+                        
+                </div>
+                
+            </div>
+            <% if(sess.usuario == 'c') { %>
+            <div class="col-md-2 pt-2">
+                    <button id="btnConsulta" class="btn btn-success btn-nuevo mt-2 text-left" onclick="mostrarModalConsultas()" data-toggle="modal" data-target=".bd-example-modal-lg" style="width: 100%;">
+                        
+                        <strong><i class="fas fa-edit mr-1"></i>Ir a consultas  </strong>
+                    </button>
+
+                    <button id="btnPedido" class="btn btn-success btn-nuevo mt-2 text-left" onclick="mostrarModalVentas()" data-toggle="modal" data-target=".bd-example-modal-lg" style="width: 100%;">
+                        
+                        <strong><i class="fas fa-shopping-cart mr-1"></i>Ir a pedidos</strong>
+                    </button>
+                    <!--button type="button" class="btn btn-success  btn-block mt-3">Hacer pedido</button-->
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+
+    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" > 
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="background: #F8F8FA;">
+                <div class="modal-header">
+                    <% if(sess.usuario == 'c') { %>
+                        <h3 class="modal-title" id="exampleModalLabel">Consultar</h3>
+                    <% } %>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/consulta" method="POST" id="producto"
+                onKeypress="if(event.keyCode == 13) event.returnValue = false;">
+                    <div class="modal-body">
+                        <div class="row" id="modalConsultar">
+                                                    
+                        </div>
+        
+                    </div>
+                 
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        window.onload = function(){
+            <% if(messages.msj) {%>
+                alert('<%=messages.msj%>');
+            <%}%>
+        }
+         var productosC = <%- JSON.stringify(productos) %>;
+         var serviciosC = <%- JSON.stringify(servicios) %>;
+         <% if(sess.data) {%>
+            var sesion = <%- JSON.stringify(sess.data) %> ;
+         <%}%>        
+        function promociones(){
+
+            document.getElementById("contenidoPromociones").style.display = "flex";
+            document.getElementById("tituloPromociones").style.display = "";
+
+            document.getElementById("contenidoProductos").style.display = "none";
+            document.getElementById("tituloProductos").style.display = "none";
+            document.getElementById("contenidoServicios").style.display = "none";
+            document.getElementById("tituloServicios").style.display = "none";
+
+        }
+
+        function productos(){
+            document.getElementById("contenidoProductos").style.display = "flex";
+            document.getElementById("tituloProductos").style.display = "";
+            
+            document.getElementById("contenidoPromociones").style.display = "none";
+            document.getElementById("tituloPromociones").style.display = "none";
+            document.getElementById("contenidoServicios").style.display = "none";
+            document.getElementById("tituloServicios").style.display = "none";
+        }
+
+        function servicios(){
+            document.getElementById("contenidoServicios").style.display = "flex";
+            document.getElementById("tituloServicios").style.display = "";
+        
+            document.getElementById("contenidoPromociones").style.display = "none";
+            document.getElementById("tituloPromociones").style.display = "none";
+            document.getElementById("contenidoProductos").style.display = "none";
+            document.getElementById("tituloProductos").style.display = "none";
+            
+        }
+
+        function mostrarModalConsultas(){
+            console.log(productosC);
+            checkboxs = [...document.querySelectorAll("[type=checkbox]")];
+            ids = checkboxs.filter(c => c.checked).map(c => c.id); //ARRAY DE LOS IDs CAPTURADOS
+            
+            if(ids.length >0){
+                document.getElementById("modalConsultar").innerHTML = "";
+                for(i=0;i<productosC.length;i++){
+                    for(j=0;j<ids.length;j++){
+                        if(productosC[i].codigo == ids[j]){
+                            document.getElementById("modalConsultar").innerHTML +=
+                            '<div class="col-md-6 mb-2">'+
+                                
+                                '<img class="img-thumbnail" src='+productosC[i].imagen+' width="300"></img>'+
+                                
+                            '</div>'+
+
+                            '<div class="col-md-6 mb-2">'+
+                                '<label class="d-block"><strong>'+productosC[i].nombre+'</strong></label>'+
+                                '<label class="d-block"><strong>Precio : S/. </strong>'+productosC[i].precio+'</label>'+
+                                '<label class="d-block"><strong>Detalle :</strong></label>'+
+                                '<label class="d-block text-justify">'+productosC[i].detalle+'</label>'+
+                            '</div>'+
+                            '<div class="form-group col-md-12">'+
+                            '<label>Escriba su consulta aqui : </label>'+
+                            '<input type="number" name="codigoPro" value='+productosC[i].codigo+' style="visibility:hidden;"></input>'+
+                            
+                            '<textarea name="consulta"  class="form-control" rows="4"></textarea>'+
+
+                            '</div>';
+                        }
+                    } 
+                }
+                for(i=0;i<serviciosC.length;i++){
+                    for(j=0;j<ids.length;j++){
+                        if(serviciosC[i].codigo == ids[j]){
+                            document.getElementById("modalConsultar").innerHTML +=
+                            '<div class="col-md-6 mb-2">'+                               
+                                '<img class="img-thumbnail" src='+serviciosC[i].imagen+' width="300"></img>'+                                
+                            '</div>'+
+
+                            '<div class="col-md-6 mb-2">'+
+                                '<label class="d-block"><strong>'+serviciosC[i].nombre+'</strong></label>'+
+                                '<label class="d-block"><strong>Precio : S/. </strong>'+serviciosC[i].precio+'</label>'+
+                                '<label class="d-block"><strong>Detalle :</strong></label>'+
+                                '<label class="d-block text-justify">'+serviciosC[i].detalle+'</label>'+
+                            '</div>'+
+
+                            '<div class="form-group col-md-12">'+
+                            '<label>Escriba su consulta aqui : </label>'+
+                            '<input type="number" name="codigoPro" value='+serviciosC[i].codigo+' style="visibility:hidden;"></input>'+
+                            
+                            '<textarea name="consulta"  class="form-control" rows="4"></textarea>'+
+                            '</div>';
+                        }
+                    } 
+                }
+                document.getElementById("modalConsultar").innerHTML += '<input type="number" name="codigoCli" value='+sesion.CODCLIENTE+' style="visibility:hidden;"></input>';
+            }else{
+                alert("Seleccione al menos un producto o servicio");
+            }
+           
+        }
+        function mostrarModalVentas(){
+            console.log(productosC);
+            checkboxs = [...document.querySelectorAll("[type=checkbox]")];
+            ids = checkboxs.filter(c => c.checked).map(c => c.id); //ARRAY DE LOS IDs CAPTURADOS
+
+            //cambiar nombre de modal para ventas
+            document.getElementById("producto").setAttribute("action", "/ventas/ingresar");
+            document.getElementById("exampleModalLabel").innerHTML = "Pedidos de productos y servicios";
+            
+            if(ids.length >0){
+                document.getElementById("modalConsultar").innerHTML = "";
+                for(i=0;i<productosC.length;i++){
+                    for(j=0;j<ids.length;j++){
+                        if(productosC[i].codigo == ids[j]){
+                            document.getElementById("modalConsultar").innerHTML +=
+                            '<div class="col-md-6 mb-2">'+
+                                
+                                '<img class="img-thumbnail" src='+productosC[i].imagen+' width="300"></img>'+
+                                
+                            '</div>'+
+
+                            '<div class="col-md-6 mb-2">'+
+                                '<label class="d-block"><strong>'+productosC[i].nombre+'</strong></label>'+
+                                '<label class="d-block"><strong>Precio : S/. </strong>'+productosC[i].precio+'</label>'+
+                                '<label class="d-block"><strong>Detalle :</strong></label>'+
+                                '<label class="d-block text-justify">'+productosC[i].detalle+'</label>'+
+                                '<label class="badge badge-info"><i class="fas fa-boxes"></i> Cantidad : <input type="number" class="form-control" name="cantidad" min="1" value="1"></input></label>'+
+                            '</div>'+
+                            '<div class="form-group col-md-12">'+
+                            '<label class="badge badge-info"><i class="fas fa-clipboard-list"></i> Si desea adicional a producto, escriba aqui : </label>'+
+                            '<input type="number" name="codigoPro" value='+productosC[i].codigo+' style="visibility:hidden;"></input>'+
+                            
+                            '<textarea name="ventaAdicional"  class="form-control" rows="3"></textarea>'+
+                       
+                            '</div>';
+                        }
+                        
+                    } 
+                }                                                               
+                         
+                for(i=0;i<serviciosC.length;i++){
+                    for(j=0;j<ids.length;j++){
+                        if(serviciosC[i].codigo == ids[j]){
+                            document.getElementById("modalConsultar").innerHTML +=
+                            '<div class="col-md-6 mb-2">'+
+                                
+                                '<img class="img-thumbnail" src='+serviciosC[i].imagen+' width="300"></img>'+
+                                
+                            '</div>'+
+
+                            '<div class="col-md-6 mb-2">'+
+                                '<label class="d-block"><strong>'+serviciosC[i].nombre+'</strong></label>'+
+                                '<label class="d-block"><strong>Precio : S/. </strong>'+serviciosC[i].precio+'</label>'+
+                                '<label class="d-block"><strong>Detalle :</strong></label>'+
+                                '<label class="d-block text-justify">'+serviciosC[i].detalle+'</label>'+
+                                '<label class="badge badge-info"><i class="fas fa-boxes"></i> Cantidad : <input type="number" class="form-control" name="cantidad" min="1" value="1"></input></label>'+
+                            '</div>'+
+
+                            '<div class="form-group col-md-12">'+
+                            '<label class="badge badge-info"> <i class="fas fa-clipboard-list"></i> Adicional de servicio : </label>'+
+                            '<input type="number" name="codigoPro" value='+serviciosC[i].codigo+' style="visibility:hidden;"></input>'+
+                            
+                            '<textarea name="ventaAdicional"  class="form-control" rows="1" readonly="true" >No aplica para servicios</textarea>'+
+                            '</div>';
+                        }
+                    } 
+                }
+                document.getElementById("modalConsultar").innerHTML += '<input type="number" name="codigoCli" value='+sesion.CODCLIENTE+' style="visibility:hidden;"></input>';
+            }else{
+                alert("Seleccione al menos un producto o servicio");
+            }
+           
+        }
+        function enviarConsulta(id){
+            document.getElementById("modalConsultar").action = "/producto/update/" +
+            document.getElementById("id").value;
+        }
+        function consultar(){
+           
+            const datap = { a: 1 };
+ 
+            fetch('/consulta', { 
+                    method: 'post',
+                    body:    datap
+                    //headers: { 'Content-Type': 'application/json' },
+                })
+                .then(res => res.json())
+                .then(json => console.log(json));
+        }     
+    </script>
+
+    <% include particiones/_footer %>

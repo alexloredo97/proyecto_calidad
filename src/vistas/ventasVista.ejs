@@ -1,0 +1,179 @@
+<% include particiones/_header %>
+
+<div class="container">
+    <div class="row mt-3">
+        <h3><i class="fas fa-shopping-cart"></i> Mis compras</h3>
+    </div>
+    <hr>
+    <div class="table-responsive-xl mt-3">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th style="min-width: 160px">Codigo</th>
+                    <th>Fecha Pedido</th>
+                    <th >Fecha Pago</th>
+                    <th >Fecha de Entrega</th>
+                    <th >Estado</th>
+                    <th style="min-width: 160px">Detalle</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(ventas) {%>
+                    <% for (var i=0; i<ventas.length; i++) { %>
+                        <tr>
+                        
+                            <td> <%= ventas[i].codigo_venta %></td>
+                            <td><%= ventas[i].fecha_pedido %></td>
+                            <% if(ventas[i].fecha_pago==null) {%>
+                                <td>En espera</td>
+                            <%}else{%>
+                                <td><%= ventas[i].fecha_pago %></td>
+                            <%}%>
+
+                            <% if(ventas[i].fecha_entrega==null) {%>
+                                <td>En espera</td>
+                            <%}else{%>
+                                <td><%= ventas[i].fecha_entrega %></td>
+                            <%}%>
+                            
+                            <td><%= ventas[i].estado %></td>
+                            <td>
+                                <div class="btn-group">
+
+                                    <button onclick="" class="btn btn-info">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+                                    <button id="btnModificar" class="btn btn-success" onclick="mostrarModalModificar('<%= ventas[i].codigo_venta %>')" data-toggle="modal" data-target=".bd-example-modal-lg">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="eliminarVenta('<%= ventas[i].codigo_venta %>')" class="btn btn-danger">
+                                        <i class="fa fa-trash-alt"></i>
+                                    </button>
+
+                                </div>
+                            </td>
+                        </tr>
+                    <% } %>
+                <% }%>
+            </tbody>
+            
+        </table>
+    </div>
+    
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" > 
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="background: #F8F8FA;">
+                <div class="modal-header">
+                    <% if(sess.usuario == 'c') { %>
+                        <h4 class="modal-title" id="exampleModalLabel"><i class="fas fa-edit"></i> Modificar compra</h4>
+                    <% } %>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/ventas/modificar" method="POST" id="compraform"
+                onKeypress="if(event.keyCode == 13) event.returnValue = false;">
+                    <div class="modal-body">
+                        <div class="row" id="modalCompra">
+                            
+                            
+                            
+                        </div>
+
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnAceptar" class="btn btn-primary" onclick="" type="submit">Aceptar</button>
+                        <button id="btnCancelar" class="btn btn-danger"   data-dismiss="modal" type="submit">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+</div>
+
+<script>
+    window.onload = function(){
+        <% if(messages.msj) {%>
+            alert('<%=messages.msj%>');
+        <%}%>
+    }
+    var ventasC = <%- JSON.stringify(ventas) %>;
+    var detalleC = <%- JSON.stringify(detalle_ventas) %>;
+
+    function eliminarVenta(id){
+        var r = confirm("¿ Desea eliminar la compra "+id+"?");
+        if (r == true) {
+            window.location.href ="/ventas/eliminar/"+id;
+        }
+    }
+    function mostrarModalModificar(id){
+        var temp = [];
+        document.getElementById("modalCompra").innerHTML ="";
+        
+
+        for(var i=0;i<detalleC.length;i++){
+            if(detalleC[i].CODIGO_VENTA==id){
+                temp.push(detalleC[i]);
+            }
+        }
+        console.log(temp);
+        document.getElementById("modalCompra").innerHTML = '<div class="col-md-12">'+
+        '<h6 class="">Codigo: <span class="badge badge-info">'+id+'</span></h6>'+
+        '<input type="text" name="codigoVenta" value='+id+' style="display:none;"></input>';
+
+        for(var j=0;j<temp.length;j++){
+            if(temp[j].TIPO=="P"){
+                console.log("producto");
+                document.getElementById("modalCompra").innerHTML += 
+                
+                '<div class="col-md-12 border border-secondary rounded p-2 mb-2">'+
+                    '<div class="form-row">'+
+                        '<h6 class="col-md-6" >Producto :<span class="badge badge-success">'+temp[j].NOMBRE+'</span></h6>'+
+                        '<h6 class="col-md-6" >Cantidad: <span class="badge badge-info"><input name="cantidad" class="" type="number" min="1" value='+temp[j].CANTIDAD+'></input></span></h6>'+
+                    '</div>'+
+                    '<input type="number" name="codigoPro" value='+temp[j].CODIGO_PROD+' style="display:none;"></input>'+
+                    '<div class="form-row">'+
+                        '<h6 class="col-md-6" >Costo normal :<input name="costoNormal" class="form-control" type="text" readonly="true" value='+temp[j].PRECIO+'></input></h6>'+
+                        '<h6 class="col-md-6" >Costo adicional :<input name="costoAdicional" class="form-control" type="text" readonly="true" value='+temp[j].COSTO_ADICIONAL+'></input></h6>'+
+                    '</div>'+
+                    '<label class="badge badge-info"><i class="fas fa-clipboard-list"></i> Adicional de producto: </label>'+
+                    '<textarea name="ventaAdicional"  class="form-control" rows="3">'+temp[j].ADICIONAL+'</textarea>'+
+                    '<div class="form-row">'+
+                        '<h6 class="col-md-6">Costo subtotal : <input class="form-control" type="text" readonly="true" value='+(temp[j].PRECIO+temp[j].COSTO_ADICIONAL)+'></input></h6> '+
+                    '</div>'+
+                '</div>';
+            }else{
+                console.log("servicio");
+                document.getElementById("modalCompra").innerHTML += 
+                
+                '<div class="col-md-12 border border-secondary rounded p-2 mb-2">'+
+                    '<div class="form-row">'+
+                        '<h6 class="col-md-6" >Servicio : <span class="badge badge-success">'+temp[j].NOMBRE+'</span></h6>'+
+                        '<h6 class="col-md-6" >Cantidad: <span class="badge badge-info"><input name="cantidad" class="" type="number" min="1" value='+temp[j].CANTIDAD+'></input></span></h6>'+
+                    '</div>'+
+                    '<input type="number" name="codigoPro" value='+temp[j].CODIGO_PROD+' style="display:none;"></input>'+
+                    '<div class="form-row">'+
+                        '<h6 class="col-md-6" >Costo normal :<input name="costoNormal" class="form-control" type="text" readonly="true" value='+temp[j].PRECIO+'></input></h6>'+
+                        '<h6 class="col-md-6" >Costo adicional :<input name="costoAdicional" class="form-control" type="text" readonly="true" value='+temp[j].COSTO_ADICIONAL+'></input></h6>'+
+                    '</div>'+
+                    '<label class="badge badge-info"><i class="fas fa-clipboard-list"></i> Adicional de servicio: </label>'+
+                    '<textarea name="ventaAdicional"  class="form-control" rows="1" readonly="true">'+temp[j].ADICIONAL+'</textarea>'+
+                    '<div class="form-row">'+
+                        '<h6 class="col-md-6">Costo subtotal : <input class="form-control" type="text" readonly="true" value='+(temp[j].PRECIO+temp[j].COSTO_ADICIONAL)+'></input></h6> '+
+                    '</div>'+
+                '</div>';
+            }
+                
+        }
+
+        document.getElementById("modalCompra").innerHTML +='</div>';
+
+        
+    }
+    
+</script>
+
+<% include particiones/_footer %>

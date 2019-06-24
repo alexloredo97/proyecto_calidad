@@ -1,0 +1,174 @@
+<% include particiones/_header %>
+<div class = "container mt-4">
+    <div class="d-flex justify-content-between flex-wrap">
+        <h3> Lista de Servicios </h3>
+        <button class="btn btn-success btn-nuevo" onclick="cancelar()" data-toggle="modal" data-target=".bd-example-modal-lg">
+            <i class="fas fa-plus mr-2"></i>
+            <strong>Nuevo</strong>
+        </button>
+    </div>
+    <hr>
+    <div class="table-responsive-xl mt-3">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>N°</th>
+                    <th>Nombre</th>
+                    <th style="min-width: 160px">Descripción</th>
+                    <th style="min-width: 160px">Detalle</th>
+                    <th>Precio</th>
+                    <th>Tipo Servicio</th>
+                    <th>Promocion</th>
+                    <th style="min-width: 120px">Foto</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(data) { %>
+                    <% for (var i=0; i<data.length; i++) { %>
+                        <tr>
+                            <td> <%= data[i].codigo %> </td>
+                            <td> <%= data[i].nombre %> </td>
+                            <td> <%= data[i].descripcion %> </td>
+                            <td> <%= data[i].detalle %> </td>
+                            <td> <%= data[i].precio %> </td>
+                            <td> <%= data[i].tipo %> </td>
+                            <td> <%= data[i].promo %> </td>
+                            <td> <img class="img-thumbnail" width="100px" src="<%= data[i].imagen %>"  onerror="this.src='no-image.jpg';"> </td>
+                            <td> 
+                                <div class="btn-group">
+                                    <button onclick="confirmarEliminar('<%= data[i].codigo %>')" class="btn btn-danger">
+                                        <i class="fa fa-trash-alt"></i>
+                                    </button>
+                                    <button class="btn btn-primary" onclick="update('<%=data[i].codigo%>',
+                                                            '<%=data[i].nombre%>',
+                                                            '<%=data[i].descripcion%>',
+                                                            '<%=data[i].detalle%>',
+                                                            '<%=data[i].precio%>',
+                                                            '<%=data[i].tipo%>',
+                                                            '<%=data[i].imagen%>')"  data-toggle="modal" data-target=".bd-example-modal-lg">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <% } %>
+                <% }%>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Datos Servicio</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/servicio/add" method="post" id="servicio"
+                    onKeypress="if(event.keyCode == 13) event.returnValue = false;">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input id="nombre" class="form-control" type="text" name="nombre" placeholder="Nombre" required>
+                            </div>
+                                <div class="form-group">
+                                <textarea id="descripcion" class="form-control" rows="4" name="descripcion" placeholder="Descripción" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="detalle" class="form-control" rows="4" name="detalle" placeholder="Detalle" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <input id="precio" class="form-control" type="number" min=0 step=0.01 name="precio" placeholder="Precio" required>
+                            </div>
+                            <div class="form-group">
+                                <input id="tipo_servicio" class="form-control" type="text" name="tipo_servicio" placeholder="Tipo de servicio" required>
+                            </div>
+                            <div class="form-group">
+                                <input style="display: none" id="id" class="form-control" type="text" name="id" placeholder="Id">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Imagen:</label>
+                                <div class="input-group">
+                                    <input type="text" id="input-txt" class="form-control"  name="imagen" readonly>
+                                    <div class="input-group-append">
+                                        <label class="btn btn-secondary" for="imagen"><i class="fas fa-search-plus"></i></label>
+                                    </div>
+                                </div>
+                                <input style="display:none" type="file" id="imagen" onchange="loadFile(event)" accept="image/*">
+                                <img class="figure-img img-fluid rounded" id="output" width="100%"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnGuardar" class="btn btn-primary" type="submit">Guardar</button>
+                    <button id="btnModificar" onclick="updateForm()" class="btn btn-primary" style="display:none" type="submit">Modificar</button>
+                </div>   
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function(){
+        <% if(messages.msj) {%>
+            alert('<%=messages.msj%>');
+        <%}%>
+    }
+    function update(id, nombre,descripcion, detalle, precio, tipo_servicio, imagen) {
+        document.getElementById('btnGuardar').style.display = 'none';
+        document.getElementById('btnModificar').style.display = 'inline';
+        document.getElementById("id").value = id;
+        document.getElementById("nombre").value = nombre;
+        document.getElementById("descripcion").value = descripcion;
+        document.getElementById("detalle").value = detalle;
+        document.getElementById("precio").value = precio;
+        document.getElementById("tipo_servicio").value = tipo_servicio;
+        document.getElementById("input-txt").value = imagen;
+        document.getElementById('output').src = imagen;
+    }
+    function updateForm(){
+        document.getElementById("servicio").action = "/servicio/update/" +
+        document.getElementById("id").value;
+    }
+    function cancelar(id, nombre,descripcion, detalle, precio, stock) {
+        document.getElementById('btnGuardar').style.display = 'inline';
+        document.getElementById('btnModificar').style.display = 'none';
+        document.getElementById("id").value = '';
+        document.getElementById("nombre").value = '';
+        document.getElementById("descripcion").value = '';
+        document.getElementById("detalle").value = '';
+        document.getElementById("precio").value = '';
+        document.getElementById("tipo_servicio").value = '';
+        document.getElementById("input-txt").value = '';
+        document.getElementById('output').src = '';
+    }
+    function loadFile(event) {
+        var output = document.getElementById('output');
+        output.src = event.target.files[0].name;
+    };
+    function confirmarEliminar(id) {
+        var r = confirm("Desea eliminar el servicio "+id+"?");
+        if (r == true) {
+            window.location.href ="/servicio/delete/"+id
+        }
+    }
+    //
+    var input_file = document.querySelector("#imagen");
+    var input_txt = document.querySelector("#input-txt");
+    
+    input_file.addEventListener("change", function () {
+        label = input_file.value.replace(/\\/g, '/').replace(/.*\//, '');
+        if (label) input_txt.value = label;
+    });
+</script>
+
+<% include particiones/_footer %>

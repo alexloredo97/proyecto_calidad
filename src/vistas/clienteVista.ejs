@@ -1,0 +1,146 @@
+<% include particiones/_header %>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between flex-wrap">
+            <h3> Lista de Clientes </h3>
+            <!--
+            <button class="btn btn-success btn-nuevo" onclick="cancelar()" data-toggle="modal" data-target=".bd-example-modal-lg">
+            <i class="fas fa-plus mr-2"></i>
+            <strong>Nuevo</strong>
+            </button>
+            -->
+        </div>
+        <hr>
+        <div class="table-responsive-xl mt-3">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>N°</th>
+                        <th>Empresa</th>
+                        <th>Nombres</th>
+                        <th>Ap. Paterno</th>
+                        <th>Ap. Materno</th>
+                        <th>Celular</th>
+                        <th>Correo</th>
+                        <th>Fecha Nac</th>
+                        <th>Telefono</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(data) { %>
+                        <% for (var i=0; i<data.length; i++) { %>
+                            <tr>
+                                <td>
+                                    <%= data[i].CODCLIENTE %>
+                                </td>
+                                <td>
+                                    <%= data[i].EMPRESA_ASOCIADA %>
+                                </td>
+                                <td>
+                                    <%= data[i].NOMBRES %>
+                                </td>
+                                <td>
+                                    <%= data[i].APELL_PATERNO %>
+                                </td>
+                                <td>
+                                    <%= data[i].APELL_MATERNO %>
+                                </td>
+                                <td>
+                                    <%= data[i].CELULAR %>
+                                </td>
+                                <td>
+                                    <%= data[i].CORREO %>
+                                </td>
+                                <td>
+                                    <%= data[i].FECHA_NAC %>
+                                </td>
+                                <td>
+                                    <%= data[i].TELEFONO %>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button onclick="confirmarEliminar('<%= data[i].CODCLIENTE %>')" class="btn btn-danger">
+                                            <i class="fa fa-trash-alt"></i>
+                                        </button>
+                                        <!--
+                                        <button class="btn btn-primary" onclick="update('<%=data[i].CODCLIENTE%>',
+                                                                '<%=data[i].EMPRESA_ASOCIADA%>',
+                                                                '<%=data[i].NOMBRES%>',
+                                                                '<%=data[i].APELL_PATERNO%>',
+                                                                '<%=data[i].APELL_MATERNO%>',
+                                                                '<%=data[i].CELULAR%>',
+                                                                '<%=data[i].CORREO%>',
+                                                                '<%=data[i].FECHA_NAC%>',
+                                                                '<%=data[i].TELEFONO%>')" data-toggle="modal" data-target=".bd-example-modal-lg">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    -->
+                                    </div>
+                                </td>
+                            </tr>
+                            <% } %>
+                                <% }%>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            <% if(messages.msj){ %>
+            alert('<%=messages.msj%>');
+            <% } %>
+        }
+        function update(id, empresa_asociada, nombres, apell_paterno, apell_materno, celular, correo, contrasena, fecha_nac, telefono) {
+            document.getElementById('btnGuardar').style.display = 'none';
+            document.getElementById('btnModificar').style.display = 'inline';
+            document.getElementById("id").value = id;
+            document.getElementById("EMPRESA_ASOCIADA").value = empresa_asociada;
+            document.getElementById("NOMBRES").value = nombres;
+            document.getElementById("APELL_PATERNO").value = apell_paterno;
+            document.getElementById("APELL_MATERNO").value = apell_materno;
+            document.getElementById("CELULAR").value = celular;
+            document.getElementById("CORREO").value = correo;
+            document.getElementById('CONTRASENA').value = contrasena;
+            document.getElementById('FECHA_NAC').value = fecha_nac;
+            document.getElementById('TELEFONO').value = telefono;
+        }
+
+        function updateForm() {
+            document.getElementById("cliente").action = "/cliente/update/" +
+                document.getElementById("id").value;
+        }
+
+        function cancelar(id, empresa_asociada, nombres, apell_paterno, apell_materno, celular, correo, contrasena, fecha_nac, telefono) {
+            document.getElementById('btnGuardar').style.display = 'inline';
+            document.getElementById('btnModificar').style.display = 'none';
+            document.getElementById("id").value = '';
+            document.getElementById("EMPRESA_ASOCIADA").value = '';
+            document.getElementById("NOMBRES").value = '';
+            document.getElementById("APELL_PATERNO").value = '';
+            document.getElementById("APELL_MATERNO").value = '';
+            document.getElementById("CELULAR").value = '';
+            document.getElementById("CORREO").value = '';
+            document.getElementById('CONTRASENA').value = '';
+            document.getElementById('FECHA_NAC').value = '';
+            document.getElementById('TELEFONO').value = '';
+        }
+
+        function loadFile(event) {
+            var output = document.getElementById('output');
+            output.src = event.target.files[0].name;
+        };
+
+        function confirmarEliminar(id) {
+            var r = confirm("Desea eliminar el Cliente " + id + "?");
+            if (r == true) {
+                window.location.href = "/cliente/delete/" + id
+            }
+        };
+
+        /*
+        var input_file = document.querySelector("#imagen");
+        var input_txt = document.querySelector("#input-txt");
+        */
+    </script>
+
+<% include particiones/_footer %>

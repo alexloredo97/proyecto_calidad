@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Deservisa</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="icon" type="image/png" href="../../icono.png" />
+</head>
+<body style="background: #f0f3f5;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <!--a class="navbar-brand" href="#">
+            Deservisa
+        </a-->
+        <a href="/">
+            <img src="../../logodeservisa.png" width="150">
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>    
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ml-lg-4">
+                    <a class="nav-link" href="/"><i class="fas fa-home"></i> Inicio</a>
+                </li>
+                <% if(sess.usuario == 'c') { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/perfil"> <i class="fas fa-user-circle"></i> Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/consulta"><i class="fas fa-edit"></i>  Mis consultas</a>
+                    </li>
+                <% } %>
+                <% if(sess.usuario == 'a') { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/producto"><i class="fas fa-box"></i> Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/servicio"><i class="fas fa-dolly"></i> Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/promocion"> <i class="fas fa-certificate"></i> Promociones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cliente"> <i class="fa fa-users" aria-hidden="true"></i> Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/consulta/admin"> <i class="fas fa-edit"></i> Consultas</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"> <i class="fas fa-user-tie"></i> Empleados</a>
+                    </li>
+
+
+                <% } %>
+            </ul>
+            <!--form class="form-inline my-2 my-lg-0 d-flex flex-nowrap">
+                <input class="form-control" type="search" placeholder="Buscar" aria-label="Search" required>
+                <button class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
+            </form-->
+            <% if(sess.usuario) { %>
+                <div class="dropdown">
+                    <button class="btn btn-info dropdown-toggle ml-lg-3" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user mr-2"></i>
+                        <strong>
+                            <% if(sess.usuario == 'a') { %>    
+                                Administrador
+                            <% } else if(sess.usuario == 'c') { %>
+                                <%= sess.nombre %>
+                            <% } %>
+                        </strong>
+                        <!--span class="badge badge-light ml-2">9</span-->
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <% if(sess.usuario == 'c') { %>
+                        <a class="dropdown-item" href="/perfil"><i class="fas fa-user-circle"></i> Perfil</a>
+                       
+                        <div class="dropdown-divider"></div>
+                        <% } %>
+                        <a class="dropdown-item" href="/login/logout"><i class="fas fa-power-off"></i> Cerrar Sesión</a>
+                    </div>
+                </div>
+            <% } else { %>
+                <a href="/login" class="btn btn-info ml-lg-3">
+                    <i class="fas fa-user mr-2"></i>
+                    <strong>Iniciar Sesión</strong>
+                </a>
+            <% } %>
+        </div> 
+    </nav>
+<!--
+    minty: rosado, blanco
+    darkly: verde, negro
+    solar: verdeazulado
+    slate: gris oscuro
+    sandstone: gris oscuro, blanco
+    sketchy: gris oscuro, blanco - lapiz
+    lumen: azul, blanco
+    cyborg: negro
+-->

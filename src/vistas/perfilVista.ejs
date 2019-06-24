@@ -1,0 +1,88 @@
+<% include particiones/_header %>
+
+<div class="container mt-4">
+    <div class="modal-dialog mt-3">
+        <form action="/perfil" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Datos Perfil</h2>
+                </div>
+                <div class="modal-body formPerfil">
+                    <input class="d-none" type="text" name="codigo" value="<%=data.CODCLIENTE%>" readonly required>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                        </div>
+                        <input class="form-control" type="text" name="nombre" value="<%=data.NOMBRES%>" placeholder="Nombre" readonly required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input class="form-control" type="text" name="ape_pat" value="<%=data.APELL_PATERNO%>" placeholder="Apellido Paterno" readonly required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input class="form-control" type="text" name="ape_mat" value="<%=data.APELL_MATERNO%>" placeholder="Apellido Materno" readonly required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        </div>
+                        <input class="form-control" type="text" name="telefono" value="<%=data.TELEFONO%>" placeholder="Teléfono" readonly  required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
+                        </div>
+                        <input class="form-control" type="text" name="celular" value="<%=data.CELULAR%>" placeholder="Celular" readonly  required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-birthday-cake"></i></span>
+                        </div>
+                        <input class="form-control" type="date" name="fec_nac" value="<%=data.FECHA_NAC%>" placeholder="Fecha de Nacimiento" readonly required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-building"></i></span>
+                        </div>
+                        <input class="form-control" type="text" name="empresa" value="<%=data.EMPRESA_ASOCIADA%>" placeholder="Empresa" readonly  required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        </div>
+                        <input class="form-control" type="email" name="correo" value="<%=data.CORREO%>" placeholder="Correo" readonly  required>
+                    </div>
+                    <div class="input-group d-none">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        </div>
+                        <input class="form-control" type="password" name="contrasena" value='123' placeholder="Contraseña" readonly required>
+                    </div>
+                </div>
+                <div class="modal-footer footer1">
+                    <button type="button" onclick="editar()" class="btn btn-primary">Editar</button>
+                </div>
+                <div class="modal-footer footer2" style="display: none">
+                    <a href="/perfil" class="btn btn-link">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function editar() {
+        formPerfil = document.querySelector(".formPerfil");
+        inputs = formPerfil.querySelectorAll("input");
+        footer1 = document.querySelector(".footer1");
+        footer2 = document.querySelector(".footer2");
+        
+        inputs.forEach( element => {
+            element.readOnly = false;
+        })
+        footer1.style.display = 'none';
+        footer2.style.display = null;
+    }
+</script>
+
+<% include particiones/_footer %>

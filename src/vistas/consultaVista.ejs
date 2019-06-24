@@ -1,0 +1,98 @@
+<% include particiones/_header %>
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between">
+        <h3>Mis Consultas</h3>
+        <a href="/" class="btn btn-outline-secondary"><i class="fas fa-plus"></i><strong> Consultas</strong></a>
+    </div>
+    <hr>
+
+    <%if(consultas){ %>
+    <div class="row">
+        <div class="col-4">
+            <div class="mb-3">
+                <%for (var i=0; i<consultas.length; i++) { %>
+                <div class="btn-group btn-block">
+                    <button id="id_<%=consultas[i].CODIGO_CONSULTA %>_<%=consultas[i].CODIGO_PROD %>" onclick="showProduct(<%=consultas[i].CODIGO_CONSULTA %>,<%=consultas[i].CODIGO_PROD %>)" 
+                    <%if(i==0){ %>
+                        class="btn btn-info btn-msg w-100">
+                    <%}else{ %>
+                        class="btn btn-outline-info btn-msg w-100">
+                    <%} %>
+                    <%=consultas[i].NOMBRE%></button>
+
+                    <%if(consultas[i].RESPUESTA){ %>
+                        <span class="btn btn-success"><i class="fas fa-check-double"></i></span>
+                    <%}else{ %>
+                        <span class="btn btn-secondary"><i class="fas fa-check"></i></span>
+                    <%} %>
+                </div>
+                <%} %>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="container card">
+                <div class="row border-bottom">
+                    <div class="col-4 p-0">
+                        <img id="imagen" width="100%" src="<%=consultas[0].IMAGEN%>" alt="">
+                    </div>
+                    <div class="col-8 p-3">
+                        <p><strong>Nombre: </strong><span id="nombre">
+                                <%=consultas[0].NOMBRE%></span></p>
+                        <p><strong>Precio: </strong><span id="precio">S/.
+                                <%=consultas[0].PRECIO%></span></p>
+                        <p><strong>Fecha Consulta: </strong><span id="fecha">
+                                <%=consultas[0].FEC_CONSULTA%></span></p>
+                    </div>
+                </div>
+                <div class="py-3">
+                    <p><strong>Consulta:</strong></p>
+                    <textarea id="consulta" class="form-control" style="width: 100%" name="" id="" cols="30" rows="3"
+                        readonly><%= consultas[0].PREGUNTA %></textarea>
+                    <br>
+                    <p><strong>Respuesta:</strong></p>
+                    <textarea id="respuesta" class="form-control" style="width: 100%" name="" id="" cols="30" rows="3"
+                        readonly><%= consultas[0].RESPUESTA %></textarea>
+                    <hr>
+                    <button class="btn btn-success float-right">Realizar Pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%} %>
+
+</div>
+
+<script>
+    var consultas = <%- JSON.stringify(consultas) %>;
+    var imagen = document.getElementById('imagen');
+    var nombre = document.getElementById('nombre');
+    var precio = document.getElementById('precio');
+    var fecha = document.getElementById('fecha');
+    var consulta = document.getElementById('consulta');
+    var respuesta = document.getElementById('respuesta');
+    var btns = document.querySelectorAll('.btn-msg');
+
+    function showProduct(id, id_prod) {
+        btn = document.getElementById('id_'+id+'_'+id_prod);
+        btns.forEach(element => {
+            element.classList.add('btn-outline-info');
+            element.classList.remove('btn-info');
+        });
+        btn.classList.remove('btn-outline-info');
+        btn.classList.add('btn-info');
+        consultas.forEach(element => {
+            if (element.CODIGO_CONSULTA == id && element.CODIGO_PROD == id_prod) {
+                imagen.src = element.IMAGEN;
+                nombre.innerHTML = element.NOMBRE;
+                precio.innerHTML = 'S/. ' + element.PRECIO;
+                fecha.innerHTML = element.FEC_CONSULTA;
+                consulta.innerHTML = element.PREGUNTA;
+                respuesta.innerHTML = element.RESPUESTA;
+                return;
+            }
+        });
+    }
+</script>
+
+<% include particiones/_footer %>

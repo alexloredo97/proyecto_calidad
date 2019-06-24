@@ -1,0 +1,16 @@
+<aside class="col-md-2 pt-4">
+    
+        
+        <div class="">
+
+            <button type="button" class="btn btn-primary btn-block mr-0 text-left" onClick="productos();"> <i class="fas fa-box"></i> Productos</button>
+            <button type="button" class="btn btn-primary btn-block mr-0 text-left" onClick="servicios();"> <i class="fas fa-dolly"></i> Servicios</button>
+            <button type="button" class="btn btn-primary btn-block mr-0 text-left" onClick="promociones();"> <i class="fas fa-certificate"></i> Promociones</button>
+            <% if(sess.usuario == 'c') { %>
+            <hr>
+            <a class="btn btn-secondary btn-block mr-0 text-left" href="/consulta"> <i class="fas fa-edit"></i> Mis consultas</a>
+            <a class="btn btn-secondary btn-block mr-0 text-left" href="/ventas/miscompras"> <i class="fas fa-shopping-cart"></i> Mis compras</a>
+            <% } %>
+        </div>
+
+</aside>

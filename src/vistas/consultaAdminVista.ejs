@@ -1,0 +1,209 @@
+<% include particiones/_header %>
+
+<div class="container my-4">
+    <div class="row">
+        <h3>Lista de Consultas</h3>
+    </div>
+    <hr>
+    <!--div class="row">
+        <% for (var i=0; i<consultas.length; i++) { %>
+        <div style="border: 1px solid #ddd; background: #fff; border-radius: 16px; box-shadow: 0 0 6px 1px #ccc" class="col-lg-6 p-4">
+            <form action="responder" method="POST">
+            <% for (var j=0; j<productos.length; j++) { %>
+                <% if(consultas[i].fk_product_servi_cod == productos[j].codigo) { %>
+                <input class="d-none" type="text" name="producto" value="<%= productos[j].codigo %>">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <img style="width: 200px" src="../../<%= productos[j].imagen %>">
+                    </div>
+                    <div class="col-lg-6">
+                        <h5>
+                            <%=productos[j].nombre%>
+                        </h5>
+                        <p> <strong>Precio: </strong>S/.
+                            <%=productos[j].precio%>
+                        </p>
+                        <p> <strong>Consulta: </strong>
+                            <%= consultas[i].pregunta %>
+                        </p>
+                    </div>
+                </div>
+                <% } %>
+            <% } %>
+            <% for (var k=0; k<servicios.length; k++) { %>
+                <% if(consultas[i].fk_product_servi_cod == servicios[k].codigo) { %>
+                    <input class="d-none" type="text" name="producto" value="<%= servicios[k].codigo %>">
+                <div class="row p-2">
+                    <div class="col-lg-6">
+                        <img style="width: 200px" src="../../<%= servicios[k].imagen %>">
+                    </div>
+                    <div class="col-lg-6">
+                        <h5>
+                            <%=servicios[k].nombre%>
+                        </h5>
+                        <p> <strong>Precio: </strong>S/.
+                            <%=servicios[k].precio%>
+                        </p>
+                        <p> <strong>Consulta: </strong>
+                            <%= consultas[i].pregunta %>
+                        </p>
+                    </div>
+                </div>
+                <% } %>
+            <% } %>
+            <hr>
+            <strong>Respuesta: </strong>
+            <input class="d-none" type="text" name="consulta" value="<%= consultas[i].fk_cod_consulta %>">
+            <div class="form-group pt-2">
+                <textarea class="txt form-control" name="respuesta" rows="4">
+                    <% if(consultas[i].respuesta){ %>
+                        <%= consultas[i].respuesta %>
+                    <% } %>
+                </textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            </form>
+        </div>
+        <% } %>
+    </div-->
+    <%if(consultas){ %>
+    <div class="row">
+        <div class="col-4">
+            <div class="mb-3">
+                <%for (var i=0; i<consultas.length; i++) { %>
+                    <% for (var j=0; j<productos.length; j++) { %>
+                        <% if(consultas[i].fk_product_servi_cod == productos[j].codigo) { %>
+                            <div class="btn-group btn-block">
+                                <span class="btn btn-info"><%=consultas[i].fk_cod_consulta %></i></span>
+                                <button id="id_<%=consultas[i].fk_cod_consulta %>_<%=consultas[i].fk_product_servi_cod %>" onclick="showProduct(<%=consultas[i].fk_cod_consulta %>,<%=consultas[i].fk_product_servi_cod %>)" class="btn btn-outline-info btn-msg w-100"><%=productos[j].nombre%></button>
+
+                                <%if(consultas[i].respuesta){ %>
+                                    <span class="btn btn-success"><i class="fas fa-check-double"></i></span>
+                                <%}else{ %>
+                                    <span class="btn btn-secondary"><i class="fas fa-check"></i></span>
+                                <%} %>
+                            </div>
+                        <%} %>
+                    <%} %>
+                    <% for (var j=0; j<servicios.length; j++) { %>
+                        <% if(consultas[i].fk_product_servi_cod == servicios[j].codigo) { %>
+                            <div class="btn-group btn-block">
+                                <span class="btn btn-info"><%=consultas[i].fk_cod_consulta %></i></span>
+                                <button id="id_<%=consultas[i].fk_cod_consulta %>_<%=consultas[i].fk_product_servi_cod %>" onclick="showProduct(<%=consultas[i].fk_cod_consulta %>,<%=consultas[i].fk_product_servi_cod %>)" class="btn btn-outline-info btn-msg w-100"><%=servicios[j].nombre%></button>
+
+                                <%if(consultas[i].respuesta){ %>
+                                    <span class="btn btn-success"><i class="fas fa-check-double"></i></span>
+                                <%}else{ %>
+                                    <span class="btn btn-secondary"><i class="fas fa-check"></i></span>
+                                <%} %>
+                            </div>
+                        <%} %>
+                    <%} %>
+                <%} %>
+            </div>
+        </div>
+        <div class="col-8">
+            <div id="panel" class="container card d-none">
+                <div class="row border-bottom">
+                    <div class="col-4 p-0">
+                        <img id="imagen" width="100%" src="<%=consultas[0].IMAGEN%>" alt="">
+                    </div>
+                    <div class="col-8 p-3">
+                        <p><strong>Nombre: </strong><span id="nombre">
+                                <%=consultas[0].NOMBRE%></span></p>
+                        <p><strong>Precio: </strong><span id="precio">S/.
+                                <%=consultas[0].PRECIO%></span></p>
+                        <p><strong>Fecha Consulta: </strong><span id="fecha">
+                                <%=consultas[0].FEC_CONSULTA%></span></p>
+                    </div>
+                </div>
+                <div class="py-3">
+                    <p><strong>Consulta:</strong></p>
+                    <textarea id="consulta" class="form-control" style="width: 100%" name="" id="" cols="30" rows="3"
+                        readonly><%= consultas[0].PREGUNTA %></textarea>
+                    <br>
+                    <p><strong>Respuesta:</strong></p>
+                    <form action="responder" method="POST">
+                        <input id="input_consulta" class="d-none" type="text" name="consulta">
+                        <input id="input_producto" class="d-none" type="text" name="producto">
+                        <textarea class="form-control" style="width: 100%" name="respuesta" id="respuesta" cols="30" rows="3"><%= consultas[0].RESPUESTA %></textarea>
+                        <hr>
+                        <button class="btn btn-success float-right">Enviar Respuesta</button>
+                    </form>
+                </div>
+            </div>
+            <div id="nopanel" class="container">
+                <p>No hay consulta Seleccionada</p>
+            </div>
+        </div>
+    </div>
+    <%} %>
+</div>
+
+<script>
+    var productos = <%- JSON.stringify(productos) %>;
+    var servicios = <%- JSON.stringify(servicios) %>;
+    var consultas = <%- JSON.stringify(consultas) %>;
+
+    var imagen = document.getElementById('imagen');
+    var nombre = document.getElementById('nombre');
+    var precio = document.getElementById('precio');
+    var fecha = document.getElementById('fecha');
+    var consulta = document.getElementById('consulta');
+    var respuesta = document.getElementById('respuesta');
+    var panel = document.getElementById('panel');
+    var btns = document.querySelectorAll('.btn-msg');
+    
+    var input_producto = document.getElementById('input_producto');
+    var input_consulta = document.getElementById('input_consulta');
+
+    window.onload = function(){
+        <% if(messages.msj) {%>
+            alert('<%=messages.msj%>');
+        <%}%>
+    }
+
+    function showProduct(id, id_prod) {
+        panel.classList.remove('d-none');
+        nopanel.classList.add('d-none');
+        btn = document.getElementById('id_'+id+'_'+id_prod);
+        btns.forEach(element => {
+            element.classList.add('btn-outline-info');
+            element.classList.remove('btn-info');
+        });
+        btn.classList.remove('btn-outline-info');
+        btn.classList.add('btn-info');
+        consultas.forEach(c => {
+            if (c.fk_cod_consulta == id && c.fk_product_servi_cod == id_prod) {
+                input_consulta.value = c.fk_cod_consulta;
+                fecha.innerHTML = c.fec_consulta;
+                consulta.innerHTML = c.pregunta;
+                respuesta.innerHTML = c.respuesta;
+            }
+        })
+        productos.forEach(p => {
+            if (p.codigo == id_prod) {
+                input_producto.value = p.codigo;
+                imagen.src = '../../'+p.imagen;
+                nombre.innerHTML = p.nombre;
+                precio.innerHTML = 'S/. ' + p.precio;
+                return;
+            }
+        });
+        servicios.forEach(s => {
+            if (s.codigo == id_prod) {
+                input_producto.value = s.codigo;
+                imagen.src = '../../'+s.imagen;
+                nombre.innerHTML = s.nombre;
+                precio.innerHTML = 'S/. ' + s.precio;
+                return;
+            }
+        });
+    }
+
+    document.querySelectorAll('.txt').forEach(e => {
+        e.innerHTML = e.innerHTML.replace(/\s\s+/g, ' ');
+    })
+</script>
+
+<% include particiones/_footer %>

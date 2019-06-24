@@ -1,0 +1,27 @@
+html {
+    font-size: 1rem;
+}
+
+@media (max-width: 1199px) {
+    html {
+        font-size: .925rem;
+    }
+}
+
+@media (max-width: 991px) {
+    html {
+        font-size: .85rem;
+    }
+}
+
+@media (max-width: 767px) {
+    html {
+        font-size: .775rem;
+    }
+}
+
+@media (max-width: 575px) {
+    html {
+        font-size: .7rem;
+    }
+}

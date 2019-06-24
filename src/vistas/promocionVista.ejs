@@ -1,0 +1,199 @@
+<% include particiones/_header %>
+
+<div class="container">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between flex-wrap">
+            <h3> Lista de Promociones </h3>
+            <button class="btn btn-success btn-nuevo" onclick="cancelar()" data-toggle="modal" data-target=".bd-example-modal-lg">
+                <i class="fas fa-plus mr-2"></i>
+                <strong>Nuevo</strong>
+            </button>
+        </div>
+        <hr>
+        <div class="table-responsive-xl mt-3">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>N°</th>
+                        <th>Producto o Servicio</th>
+                        <th>Nombre</th>
+                        <th style="min-width: 160px">Descripción</th>
+                        <th>Descuento</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Límite</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(promociones) { %>
+                    <% for (var i=0; i<promociones.length; i++) { %>
+                        <% for (var j=0; j<productos.length; j++){%>
+                            <% if(productos[j].codigopro==promociones[i].id){%>
+                                <% aux = 'P'+productos[j].codigopro+' '+productos[j].nombre  %>
+                                <% cod = productos[j].codigopro  %>
+                            <% }%>
+                        <% }%>
+                        <% for (var j=0; j<servicios.length; j++){%>
+                            <% if(servicios[j].codigopro==promociones[i].id){%>
+                                <% aux = 'S'+servicios[j].codigopro+' '+servicios[j].nombre  %>
+                                <% cod = servicios[j].codigopro  %>
+                            <% }%>
+                        <% }%>
+                    <tr>
+                        <td>
+                            <%= promociones[i].id %>
+                        </td>
+                        <td>
+                            <%= aux %>
+                        </td>
+                        <td>
+                            <%= promociones[i].nombre %>
+                        </td>
+                        <td>
+                            <%= promociones[i].detalle %>
+                        </td>
+                        <td>
+                            <%= promociones[i].descuento %>
+                        </td>
+                        <td>
+                            <%= promociones[i].date_ini %>
+                        </td>
+                        <td>
+                            <%= promociones[i].date_fin%>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button onclick="confirmarEliminar('<%= promociones[i].id %>')" class="btn btn-danger">
+                                    <i class="fa fa-trash-alt"></i>
+                                </button>
+                                <button class="btn btn-primary" onclick="update('<%=promociones[i].id%>',
+                                                        '<%=cod%>',
+                                                        '<%=promociones[i].nombre%>',
+                                                        '<%=promociones[i].detalle%>',
+                                                        '<%=promociones[i].descuento%>',
+                                                        '<%=promociones[i].date_ini%>',
+                                                        '<%=promociones[i].date_fin%>')"
+                                    data-toggle="modal" data-target=".bd-example-modal-lg">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                        </td>
+                    </tr>
+                    <% } %>
+                    <% }%>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Datos Promoción</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/promocion/add" method="post" id="promocion" onKeypress="if(event.keyCode == 13) event.returnValue = false;">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="">Producto o Servicio</label>
+                                    <select id="id_pro_ser" name="id_pro_ser" class="form-control">
+                                        <% for (var i=0; i<productos.length; i++) { %>
+                                        <option value="<%=productos[i].codigo%>">
+                                            P<%=productos[i].codigo%>
+                                            <%=productos[i].nombre%>
+                                        </option>
+                                        <% } %>
+                                        <span>Servicios</span>
+                                        <% for (var i=0; i<servicios.length; i++) { %>
+                                        <option value="<%=servicios[i].codigo%>">
+                                            S<%=servicios[i].codigo%>
+                                            <%=servicios[i].nombre%>
+                                        </option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input id="nombre" class="form-control" type="text" name="nombre" placeholder="Nombre"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <textarea id="detalle" class="form-control" rows="4" name="detalle" placeholder="Descripción"
+                                        required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input id="descuento" class="form-control" type="number" min=0 name="descuento"
+                                        placeholder="Descuento" required>
+                                </div>
+                                <div class="form-group">
+                                    <input id="date" class="form-control" type="date" name="date_ini" min="2018-10-15"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <input id="date_fin" class="form-control" type="date" name="date_fin" min="2018-10-16"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <input style="display: none" id="id" class="form-control" type="text" name="id"
+                                        placeholder="Id">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnGuardar" class="btn btn-primary" type="submit">Guardar</button>
+                        <button id="btnModificar" onclick="updateForm()" class="btn btn-primary" style="display:none"
+                            type="submit">Modificar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            <% if (messages.msj) {%>
+                alert('<%=messages.msj%>');
+            <%}%>
+        }
+
+        function update(id, cod, nombre, detalle, descuento, date_ini, date_fin) {
+            document.getElementById('btnGuardar').style.display = 'none';
+            document.getElementById('btnModificar').style.display = 'inline';
+            document.getElementById("id").value = id;
+            document.getElementById("id_pro_ser").value = cod;
+            document.getElementById("nombre").value = nombre;
+            document.getElementById("detalle").value = detalle;
+            document.getElementById("descuento").value = descuento;
+            document.getElementById("date").value = date_ini;
+            document.getElementById("date_fin").value = date_fin;
+        }
+
+        function updateForm() {
+            document.getElementById("promocion").action = "/promocion/update/" +
+                document.getElementById("id").value;
+        }
+
+        function cancelar(id, nombre, detalle, descuento, date_ini, date_fin) {
+            document.getElementById('btnGuardar').style.display = 'inline';
+            document.getElementById('btnModificar').style.display = 'none';
+            document.getElementById("id").value = '';
+            document.getElementById("id_pro_ser").selectedIndex = 0;
+            document.getElementById("nombre").value = '';
+            document.getElementById("detalle").value = '';
+            document.getElementById("descuento").value = '';
+            document.getElementById("date").value = '';
+            document.getElementById("date_fin").value = '';
+        }
+        function confirmarEliminar(id) {
+            var r = confirm("Desea eliminar la promocion " + id + "?");
+            if (r == true) {
+                window.location.href = "/promocion/delete/" + id
+            }
+        };
+    </script>
+    <% include particiones/_footer %>
